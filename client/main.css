@@ -1,1 +1,10 @@
 /* CSS declarations go here */
+
+input[type="range"] {
+    position:absolute;
+    -webkit-transform: rotate(270deg);
+    top:100px;
+    margin-top: 300px;
+    margin-left: -50px;
+    width: 25%;
+}
