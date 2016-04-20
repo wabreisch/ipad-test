@@ -6,6 +6,24 @@ import './main.html';
 
 var ipAddress = "http://10.131.52.34";
 
+// A generalized form of a HTTP request to be sent to the Arduino Yun
+// @param commandType: The type of the command being made: {servo, digital, or analog}
+// @param pin: The pin to which the given value should be written
+// @param value: The value that should be written to the given pin
+var yunCommand = function (commandType, pin, value) {
+  var requestString = ipAddress + "/arduino/" + commandType + "/" + pin + "/" + value;
+  var headers = {};
+
+  HTTP.call("GET", requestString, headers, function (error, result) {
+    if (error) {
+      console.log(error);
+    } else {
+      return result;
+    }
+  });
+
+}
+
 Template.onOff.helpers({
   // performPinRead: function (pin) {
   //   var url = "10.133.54.4/arduino/digital/" + pin + "/";
@@ -26,86 +44,37 @@ Template.onOff.helpers({
 
 Template.onOff.events({
   "click #on": function () {
-      var headers = {};
-      // headers['Access-Control-Allow-Origin'] = '"';
-      
-      HTTP.call("GET", ipAddress + "/arduino/digital/13/1", headers, function (error, result) {
-        if (error) {
-          console.log(error);
-        } else {
-          return result;
-        }
-      });
-    },
-    "click #off": function () {
-      var headers = {};
+    yunCommand("digital", 13, 1);
+  },
+  "click #off": function () {
+    yunCommand("digital", 13, 0);
+  },
 
-      HTTP.call("GET", ipAddress + "/arduino/digital/13/0", headers, function (error, result) {
-        if (error) {
-          console.log(error);
-        } else {
-          return result;
-        }
-      });
-    },
+  "click #servoon": function () {
+    yunCommand("servo", 9, 1);
+  },
 
-    "click #servoon": function () {
-      var headers = {};
+  "click #servooff": function () {
+    yunCommand("servo", 9, 0);
+  },
 
-      HTTP.call("GET", ipAddress + "/arduino/servo/9/1", headers, function (error, result) {
-        if (error) {
-          console.log(error);
-        } else {
-          return result;
-        }
-      });
-    },
+  "click #pumpon": function () {
+    yunCommand("digital", 4, 1);
+  },
 
-    "click #servooff": function () {
-      var headers = {};
-
-      HTTP.call("GET", ipAddress + "/arduino/servo/9/0", headers, function (error, result) {
-        if (error) {
-          console.log(error);
-        } else {
-          return result;
-        }
-      });
-    },
-
-    "click #pumpon": function () {
-      var headers = {};
-
-      HTTP.call("GET", ipAddress + "/arduino/digital/4/1", headers, function (error, result) {
-        if (error) {
-          console.log(error);
-        } else {
-          return result;
-        }
-      });
-    },
-
-    "click #pumpoff": function () {
-      var headers = {};
-
-      HTTP.call("GET", ipAddress + "/arduino/digital/4/0", headers, function (error, result) {
-        if (error) {
-          console.log(error);
-        } else {
-          return result;
-        }
-      });
-    },
-
-    "change #slider": function () {
-      var sliderValue = $("#slider").val();
-      HTTP.call("GET", ipAddress + "/arduino/servo/9/" + sliderValue, {}, function (error, result) {
-        if (error) {
-          console.log(error);
-        } else {
-          return result;
-        }
-      });
-      $("#sliderValue").text($("#slider").val());
-    }
+  "click #pumpoff": function () {
+    yunCommand("digital", 4, 0);
+  },
 });
+
+    // "change #slider": function () {
+    //   var sliderValue = $("#slider").val();
+    //   HTTP.call("GET", ipAddress + "/arduino/servo/9/" + sliderValue, {}, function (error, result) {
+    //     if (error) {
+    //       console.log(error);
+    //     } else {
+    //       return result;
+    //     }
+    //   });
+    //   $("#sliderValue").text($("#slider").val());
+    // }
